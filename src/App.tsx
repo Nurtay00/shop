@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { connect } from "react-redux";
+import "./App.css";
+import Mainpage from "./Pages/Mainpage/Mainpage";
+import { onAdd, onRemove, onDelete } from "./Store/action/action";
+import Header from "./Components/Header/Header";
+import { Route, Switch, Redirect } from "react-router-dom";
+import Orderpage from "./Pages/Orderpage/Orderpage";
 
-function App() {
+function App(props: any) {
+  const route = (
+    <Switch>
+      <Route path="/" exact render={() => <Mainpage {...props} />}></Route>
+      <Route path="/basket" render={() => <Orderpage {...props} />}></Route>
+      <Redirect to="/" />
+    </Switch>
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header {...props} />
+      {route}
     </div>
   );
 }
 
-export default App;
+function mapStateToProps(state: { information: { list: any; basket: any } }) {
+  return {
+    information: state,
+  };
+}
+function mapDispatchToProps(dispatch: any) {
+  return {
+    onAdd: (value: number) => dispatch(onAdd(value)),
+    onRemove: (value: number) => dispatch(onRemove(value)),
+    onDelete: (value: number) => dispatch(onDelete(value)),
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
